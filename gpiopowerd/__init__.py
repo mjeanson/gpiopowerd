@@ -48,26 +48,29 @@ PATH = "/sys/class/gpio/%s/value"
 
 class MyHandler(TelnetHandler):
     WELCOME = "carrier-armhf power control"
+    PROMPT = "> "
 
     @command(['list', 'ls'])
     def command_list(self, params):
         '''
+        List the available boards
         '''
         self.writeresponse('''1: lava-armhf-wandboard-01 (7001)
 2: lava-armhf-wandboard-02 (7002)
 3: ci-node-armhf-01 (7003)
-4: ci-node-armhf-01 (7004)
+4: ci-node-armhf-02 (7004)
 ''')
 
     @command(['on'])
     def command_on(self, params):
-        '''
+        '''<board id>
+        Turn on the specified board
         '''
         try:
             device_number = int(params[0])
             gpio = DEVICES[device_number]
             gpio_path = "/sys/class/gpio/%s/value" % gpio
-        except ValueError:
+        except (ValueError, IndexError):
             self.writeerror("Invalid device number")
             return
 
@@ -88,13 +91,14 @@ class MyHandler(TelnetHandler):
 
     @command(['off'])
     def command_off(self, params):
-        '''
+        '''<board id>
+        Turn off the specified board
         '''
         try:
             device_number = int(params[0])
             gpio = DEVICES[device_number]
             gpio_path = "/sys/class/gpio/%s/value" % gpio
-        except ValueError:
+        except (ValueError, IndexError):
             self.writeerror("Invalid device number")
             return
 
@@ -115,13 +119,14 @@ class MyHandler(TelnetHandler):
 
     @command(['reset'])
     def command_reset(self, params):
-        '''
+        '''<board id>
+        Reset the specified board
         '''
         try:
             device_number = int(params[0])
             gpio = DEVICES[device_number]
             gpio_path = "/sys/class/gpio/%s/value" % gpio
-        except ValueError:
+        except (ValueError, IndexError):
             self.writeerror("Invalid device number")
             return
 
@@ -138,13 +143,14 @@ class MyHandler(TelnetHandler):
 
     @command(['status'])
     def command_status(self, params):
-        '''
+        '''<board id>
+        Get the status of the specified board
         '''
         try:
             device_number = int(params[0])
             gpio = DEVICES[device_number]
             gpio_path = "/sys/class/gpio/%s/value" % gpio
-        except ValueError:
+        except (ValueError, IndexError):
             self.writeerror("Invalid device number")
             return
 
