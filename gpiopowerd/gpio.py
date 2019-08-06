@@ -18,32 +18,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import argparse
-import logging
+from os import path
 
-from ._version import get_versions
-__version__ = get_versions()['version']
-del get_versions
+GPIO_PATH = '/sys/class/gpio/gpio%d'
+EXPORT_PATH = '/sys/class/gpio/export'
 
-from .handler import GPIOPowerdHandler
-from .server import GPIOPowerdServer
-from .config import read_config
-from .gpio import config_gpios
+def config_gpio(gpio):
+    gpio_path = GPIO_PATH % gpio
 
-logging.getLogger('').setLevel(logging.DEBUG)
+    if not path.isdir(gpio_path):
+        with open(EXPORT_PATH, 'r+') as f:
+            f.write(str(gpio))
+            f.flush()
 
-def run():
-    parser = argparse.ArgumentParser( description='Run a telnet server.')
-    parser.add_argument( '-c', '--conf', metavar="CONFIG", type=str, help="The path to the config file.", required=True)
-    args = parser.parse_args()
-    config = read_config(args.conf)
+    with open(path.join(gpio_path, 'direction'), 'r+') as f:
+        f.write('high')
+        f.flush()
 
-    server = GPIOPowerdServer(config, GPIOPowerdHandler)
+    with open(path.join(gpio_path, 'active_low'), 'r+') as f:
+        f.write('1')
+        f.flush()
 
-    config_gpios(config)
-
-    logging.info("Starting gpiopowerd at port %d.  (Ctrl-C to stop)" % config.port)
-    try:
-        server.serve_forever()
-    except KeyboardInterrupt:
-        logging.info("Server shut down.")
+def config_gpios(config):
+    for (k, v) in config.devices.items():
+        config_gpio(v.gpio)
