@@ -60,12 +60,13 @@ class GPIOPowerdHandler(TelnetHandler):
             self.writeerror("Invalid gpio %s" % gpio_path)
             return
 
-        with open(gpio_path, 'r+b', 0) as f:
+        with open(gpio_path, 'r+') as f:
             value = int(f.readline())
             if value == GPIO_ON:
                 self.writeresponse("Power is already on")
             else:
                 f.write(str(GPIO_ON))
+                f.flush()
                 self.writeresponse("Power set to on")
 
         return
@@ -88,12 +89,13 @@ class GPIOPowerdHandler(TelnetHandler):
             self.writeerror("Invalid gpio %s" % gpio_path)
             return
 
-        with open(gpio_path, 'r+b', 0) as f:
+        with open(gpio_path, 'r+') as f:
             value = int(f.readline())
             if value == GPIO_OFF:
                 self.writeresponse("Power is already off")
             else:
                 f.write(str(GPIO_OFF))
+                f.flush()
                 self.writeresponse("Power set to off")
 
         return
@@ -116,10 +118,12 @@ class GPIOPowerdHandler(TelnetHandler):
             self.writeerror("Invalid gpio %s" % gpio_path)
             return
 
-        with open(gpio_path, 'r+b', 0) as f:
+        with open(gpio_path, 'r+') as f:
             f.write(str(GPIO_OFF))
+            f.flush()
             time.sleep(0.5)
             f.write(str(GPIO_ON))
+            f.flush()
             self.writeresponse("Power was reset")
         return
 
@@ -141,7 +145,7 @@ class GPIOPowerdHandler(TelnetHandler):
             self.writeerror("Invalid gpio %s" % gpio_path)
             return
 
-        with open(gpio_path, 'r+b', 0) as f:
+        with open(gpio_path, 'r+') as f:
             value = int(f.readline())
             if value == GPIO_ON:
                 self.writeresponse("Power is ON")
