@@ -18,29 +18,42 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import argparse
-import logging
+import configparser
 
-from ._version import get_versions
-__version__ = get_versions()['version']
-del get_versions
+class Config:
+    host = ''
+    port = 23
+    welcome = 'gpiopowerd power control'
+    prompt = '> '
+    devices = {}
 
-from .handler import GPIOPowerdHandler
-from .server import GPIOPowerdServer
-from .config import read_config
+class Device:
+    def __init__(self, name, gpio, port):
+        self.name = name
+        self.gpio = gpio
+        self.port = port
 
-logging.getLogger('').setLevel(logging.DEBUG)
+def read_config(config_file):
+    parser = configparser.ConfigParser()
+    parser.read(config_file)
+    config = Config()
 
-def run():
-    parser = argparse.ArgumentParser( description='Run a telnet server.')
-    parser.add_argument( '-c', '--conf', metavar="CONFIG", type=str, help="The path to the config file.", required=True)
-    args = parser.parse_args()
-    config = read_config(args.conf)
+    if 'host' in parser['DEFAULT']:
+        config.host = parser['DEFAULT']['host']
 
-    server = GPIOPowerdServer(config, GPIOPowerdHandler)
+    if 'port' in parser['DEFAULT']:
+        config.port = int(parser['DEFAULT']['port'])
 
-    logging.info("Starting gpiopowerd at port %d.  (Ctrl-C to stop)" % config.port)
-    try:
-        server.serve_forever()
-    except KeyboardInterrupt:
-        logging.info("Server shut down.")
+    if 'welcome' in parser['DEFAULT']:
+        config.welcome = parser['DEFAULT']['welcome']
+
+    if 'prompt' in parser['DEFAULT']:
+        config.prompt = parser['DEFAULT']['prompt']
+
+    for device in parser.sections():
+        if device == 'DEFAULT':
+            continue
+
+        config.devices[int(parser[device]['index'])] = Device(device, int(parser[device]['gpio']), int(parser[device]['port']))
+
+    return config

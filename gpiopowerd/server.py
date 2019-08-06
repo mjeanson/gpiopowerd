@@ -18,29 +18,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import argparse
-import logging
+import sys
 
-from ._version import get_versions
-__version__ = get_versions()['version']
-del get_versions
+if sys.version_info > (3, 0):
+    from socketserver import TCPServer
+else:
+    from SocketServer import TCPServer
 
-from .handler import GPIOPowerdHandler
-from .server import GPIOPowerdServer
-from .config import read_config
+class GPIOPowerdServer(TCPServer):
 
-logging.getLogger('').setLevel(logging.DEBUG)
+    def __init__(self, config, handler):
+        self.allow_reuse_address = True
+        self.config = config
 
-def run():
-    parser = argparse.ArgumentParser( description='Run a telnet server.')
-    parser.add_argument( '-c', '--conf', metavar="CONFIG", type=str, help="The path to the config file.", required=True)
-    args = parser.parse_args()
-    config = read_config(args.conf)
-
-    server = GPIOPowerdServer(config, GPIOPowerdHandler)
-
-    logging.info("Starting gpiopowerd at port %d.  (Ctrl-C to stop)" % config.port)
-    try:
-        server.serve_forever()
-    except KeyboardInterrupt:
-        logging.info("Server shut down.")
+        TCPServer.__init__(self, (config.host, config.port), handler)

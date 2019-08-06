@@ -1,0 +1,14 @@
+[DEFAULT]
+host = 0.0.0.0
+port = 23
+welcome = "telnet power control"
+
+[device1]
+index = 1
+gpio = 66
+port = 7001
+
+[device2]
+index = 2
+gpio = 67
+port = 7002

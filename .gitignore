@@ -1,3 +1,5 @@
+/etc/gpio-powerd.conf
+
 # Backup files
 *.~
 
