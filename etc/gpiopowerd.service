@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/gpio-powerd -c /etc/gpio-powerd.conf
+ExecStart=/usr/bin/gpiopowerd -c /etc/gpiopowerd.conf
 Restart=on-failure
 
 [Install]

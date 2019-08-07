@@ -25,7 +25,7 @@ if sys.version_info > (3, 0):
 else:
     from SocketServer import TCPServer
 
-class GPIOPowerdServer(TCPServer):
+class GPIOPowerServer(TCPServer):
 
     def __init__(self, config, handler):
         self.allow_reuse_address = True

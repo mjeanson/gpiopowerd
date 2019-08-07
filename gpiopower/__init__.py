@@ -25,20 +25,20 @@ from ._version import get_versions
 __version__ = get_versions()['version']
 del get_versions
 
-from .handler import GPIOPowerdHandler
-from .server import GPIOPowerdServer
+from .handler import GPIOPowerHandler
+from .server import GPIOPowerServer
 from .config import read_config
 from .gpio import config_gpios
 
 logging.getLogger('').setLevel(logging.DEBUG)
 
-def run():
+def daemon():
     parser = argparse.ArgumentParser( description='Run a telnet server.')
     parser.add_argument( '-c', '--conf', metavar="CONFIG", type=str, help="The path to the config file.", required=True)
     args = parser.parse_args()
     config = read_config(args.conf)
 
-    server = GPIOPowerdServer(config, GPIOPowerdHandler)
+    server = GPIOPowerServer(config, GPIOPowerHandler)
 
     config_gpios(config)
 

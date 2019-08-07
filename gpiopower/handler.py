@@ -26,7 +26,7 @@ GPIO_PATH = "/sys/class/gpio/gpio%d/value"
 GPIO_ON  = 0
 GPIO_OFF = 1
 
-class GPIOPowerdHandler(TelnetHandler):
+class GPIOPowerHandler(TelnetHandler):
     def __init__(self, request, client_address, server):
         self.WELCOME = server.config.welcome
         self.PROMPT = server.config.prompt

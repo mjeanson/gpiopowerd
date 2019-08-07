@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (C) 2016 - Michael Jeanson <mjeanson@efficios.com>
+# Copyright (C) 2019 Michael Jeanson <mjeanson@efficios.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -41,12 +41,12 @@ setup(
     license='MIT',
 
     packages=[
-        'gpiopowerd',
+        'gpiopower',
         ],
 
     entry_points={
         'console_scripts': [
-            'gpio-powerd = gpiopowerd:run',
+            'gpiopowerd = gpiopower:daemon',
         ],
     },
 
