@@ -1,2 +1,3 @@
 include versioneer.py
 include gpiopowerd/_version.py
+recursive-include etc *
