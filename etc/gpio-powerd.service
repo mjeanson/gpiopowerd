@@ -1,0 +1,11 @@
+[Unit]
+Description=GPIO Power daemon
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/gpio-powerd -c /etc/gpio-powerd.conf
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
